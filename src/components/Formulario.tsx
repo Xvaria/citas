@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Alert,
   Modal,
@@ -18,6 +18,8 @@ interface FormularioProps {
   setModalVisible: (boolean: boolean) => void;
   pacientes: IPaciente[] | null;
   setPacientes: (paciente: IPaciente[]) => void;
+  paciente: IPaciente | null;
+  setPaciente: (paciente: IPaciente | null) => void;
 }
 
 const Formulario = ({
@@ -25,6 +27,8 @@ const Formulario = ({
   setModalVisible,
   pacientes,
   setPacientes,
+  paciente: pacienteObj,
+  setPaciente: setPacienteObj,
 }: FormularioProps) => {
   const [paciente, setPaciente] = useState<string>('');
   const [propietario, setPropietario] = useState<string>('');
@@ -33,6 +37,29 @@ const Formulario = ({
   const [fecha, setFecha] = useState<Date>(new Date());
   const [sintomas, setSintomas] = useState<string>('');
 
+  useEffect(() => {
+    if (pacienteObj) {
+      setPaciente(pacienteObj.paciente);
+      setPropietario(pacienteObj.propietario);
+      setEmail(pacienteObj.email);
+      setTelefono(pacienteObj.telefono);
+      setFecha(pacienteObj.fecha);
+      setSintomas(pacienteObj.sintomas);
+    }
+  }, [pacienteObj]);
+
+  const handleClose = () => {
+    setPacienteObj(null);
+    setPaciente('');
+    setPropietario('');
+    setEmail('');
+    setTelefono('');
+    setFecha(new Date());
+    setSintomas('');
+
+    setModalVisible(!modalVisible);
+  };
+
   const handleCita = () => {
     if ([paciente, propietario, email, fecha, sintomas].includes('')) {
       Alert.alert('Error', 'Todos los campos son obligatorios', [
@@ -40,7 +67,8 @@ const Formulario = ({
       ]);
       return;
     }
-    const nuevoPaciente = {
+
+    const nuevoPaciente: IPaciente = {
       id: String(Date.now()),
       paciente,
       propietario,
@@ -50,20 +78,22 @@ const Formulario = ({
       sintomas,
     };
 
-    if (pacientes) {
-      setPacientes([...pacientes, nuevoPaciente]);
+    if (pacienteObj) {
+      nuevoPaciente.id = pacienteObj.id;
+      if (pacientes) {
+        const pacientesActualizados = pacientes?.map(pacienteState =>
+          pacienteState.id === nuevoPaciente.id ? nuevoPaciente : pacienteState,
+        );
+        setPacientes(pacientesActualizados);
+      }
     } else {
-      setPacientes([nuevoPaciente]);
+      if (pacientes) {
+        setPacientes([...pacientes, nuevoPaciente]);
+      } else {
+        setPacientes([nuevoPaciente]);
+      }
     }
-
-    setPaciente('');
-    setPropietario('');
-    setEmail('');
-    setTelefono('');
-    setFecha(new Date());
-    setSintomas('');
-
-    setModalVisible(!modalVisible);
+    handleClose();
   };
 
   return (
@@ -77,7 +107,7 @@ const Formulario = ({
 
           <Pressable
             style={styles.btnCancelar}
-            onLongPress={() => setModalVisible(false)}>
+            onLongPress={() => handleClose()}>
             <Text style={styles.btnCancelarTexto}>X Cancelar</Text>
           </Pressable>
 

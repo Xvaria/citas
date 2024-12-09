@@ -20,6 +20,7 @@ import {IPaciente} from './src/interfaces/Paciente';
 const App = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [pacientes, setPacientes] = useState<IPaciente[] | null>(null);
+  const [paciente, setPaciente] = useState<IPaciente | null>(null);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,7 +41,13 @@ const App = () => {
           data={pacientes}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
-            return <Paciente paciente={item} />;
+            return (
+              <Paciente
+                paciente={item}
+                setModalVisible={setModalVisible}
+                editPatient={setPaciente}
+              />
+            );
           }}
         />
       ) : (
@@ -52,6 +59,8 @@ const App = () => {
         setModalVisible={setModalVisible}
         pacientes={pacientes}
         setPacientes={setPacientes}
+        paciente={paciente}
+        setPaciente={setPaciente}
       />
     </SafeAreaView>
   );
