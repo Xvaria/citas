@@ -7,6 +7,7 @@
 
 import React, {useState} from 'react';
 import {
+  Alert,
   FlatList,
   Pressable,
   SafeAreaView,
@@ -16,11 +17,38 @@ import {
 import Formulario from './src/components/Formulario';
 import Paciente from './src/components/Paciente';
 import {IPaciente} from './src/interfaces/Paciente';
+import InfoPaciente from './src/components/InfoPaciente';
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [pacientes, setPacientes] = useState<IPaciente[] | null>(null);
   const [paciente, setPaciente] = useState<IPaciente | null>(null);
+  const [modalPaciente, setModalPaciente] = useState<boolean>(false);
+
+  const handleDelet = (deletPatient: IPaciente) => {
+    Alert.alert(
+      '¿Desea eliminar este paciente?',
+      'Un paciente eliminado no se puede recuperar',
+      [
+        {text: 'Cancelar'},
+        {
+          text: 'Si, Eliminar',
+          onPress: () => {
+            if (pacientes) {
+              const pacientesActualizados = pacientes.filter(
+                pacienteState => pacienteState.id !== deletPatient.id,
+              );
+              if (pacientesActualizados.length > 0) {
+                setPacientes(pacientesActualizados);
+              } else {
+                setPacientes(null);
+              }
+            }
+          },
+        },
+      ],
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -46,6 +74,9 @@ const App = () => {
                 paciente={item}
                 setModalVisible={setModalVisible}
                 editPatient={setPaciente}
+                deletPatient={handleDelet}
+                setModalPaciente={setModalPaciente}
+                setPatient={setPaciente}
               />
             );
           }}
@@ -61,6 +92,12 @@ const App = () => {
         setPacientes={setPacientes}
         paciente={paciente}
         setPaciente={setPaciente}
+      />
+
+      <InfoPaciente
+        modalPaciente={modalPaciente}
+        setModalPaciente={setModalPaciente}
+        patient={paciente}
       />
     </SafeAreaView>
   );

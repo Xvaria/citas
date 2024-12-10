@@ -101,7 +101,7 @@ const Formulario = ({
       <SafeAreaView style={styles.content}>
         <ScrollView>
           <Text style={styles.title}>
-            Nueva {''}
+            {pacienteObj ? 'Editar' : 'Nueva'}
             <Text style={styles.titleBold}>Cita</Text>
           </Text>
 
@@ -183,7 +183,9 @@ const Formulario = ({
           </View>
 
           <Pressable style={styles.btnNuevaCita} onPress={() => handleCita()}>
-            <Text style={styles.btnNuevaCitaTexto}>Agregar paciente</Text>
+            <Text style={styles.btnNuevaCitaTexto}>
+              {pacienteObj ? 'Editar paciente' : 'Agregar paciente'}
+            </Text>
           </Pressable>
         </ScrollView>
       </SafeAreaView>
