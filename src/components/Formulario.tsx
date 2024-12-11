@@ -11,86 +11,86 @@ import {
   View,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {IPaciente} from '../interfaces/Paciente';
+import {IPatient} from '../interfaces/Paciente';
 
 interface FormularioProps {
   modalVisible: boolean;
-  setModalVisible: (boolean: boolean) => void;
-  pacientes: IPaciente[] | null;
-  setPacientes: (paciente: IPaciente[]) => void;
-  paciente: IPaciente | null;
-  setPaciente: (paciente: IPaciente | null) => void;
+  setModalVisible: (modalVisible: boolean) => void;
+  patients: IPatient[] | null;
+  setPatients: (patient: IPatient[]) => void;
+  patient: IPatient | null;
+  setPatient: (patient: IPatient | null) => void;
 }
 
 const Formulario = ({
   modalVisible,
   setModalVisible,
-  pacientes,
-  setPacientes,
-  paciente: pacienteObj,
-  setPaciente: setPacienteObj,
+  patients,
+  setPatients,
+  patient: patientObj,
+  setPatient: setPatientObj,
 }: FormularioProps) => {
-  const [paciente, setPaciente] = useState<string>('');
-  const [propietario, setPropietario] = useState<string>('');
+  const [patient, setPatient] = useState<string>('');
+  const [owner, setOwner] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [telefono, setTelefono] = useState<string>('');
-  const [fecha, setFecha] = useState<Date>(new Date());
-  const [sintomas, setSintomas] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [date, setDate] = useState<Date>(new Date());
+  const [symptoms, setSymptoms] = useState<string>('');
 
   useEffect(() => {
-    if (pacienteObj) {
-      setPaciente(pacienteObj.paciente);
-      setPropietario(pacienteObj.propietario);
-      setEmail(pacienteObj.email);
-      setTelefono(pacienteObj.telefono);
-      setFecha(pacienteObj.fecha);
-      setSintomas(pacienteObj.sintomas);
+    if (patientObj) {
+      setPatient(patientObj.patient);
+      setOwner(patientObj.owner);
+      setEmail(patientObj.email);
+      setPhone(patientObj.phone);
+      setDate(patientObj.date);
+      setSymptoms(patientObj.symptoms);
     }
-  }, [pacienteObj]);
+  }, [patientObj]);
 
   const handleClose = () => {
-    setPacienteObj(null);
-    setPaciente('');
-    setPropietario('');
+    setPatientObj(null);
+    setPatient('');
+    setOwner('');
     setEmail('');
-    setTelefono('');
-    setFecha(new Date());
-    setSintomas('');
+    setPhone('');
+    setDate(new Date());
+    setSymptoms('');
 
     setModalVisible(!modalVisible);
   };
 
-  const handleCita = () => {
-    if ([paciente, propietario, email, fecha, sintomas].includes('')) {
+  const handleDate = () => {
+    if ([patient, owner, email, date, symptoms].includes('')) {
       Alert.alert('Error', 'Todos los campos son obligatorios', [
         {text: 'Entiendo'},
       ]);
       return;
     }
 
-    const nuevoPaciente: IPaciente = {
+    const newPatient: IPatient = {
       id: String(Date.now()),
-      paciente,
-      propietario,
+      patient,
+      owner,
       email,
-      telefono,
-      fecha,
-      sintomas,
+      phone,
+      date,
+      symptoms,
     };
 
-    if (pacienteObj) {
-      nuevoPaciente.id = pacienteObj.id;
-      if (pacientes) {
-        const pacientesActualizados = pacientes?.map(pacienteState =>
-          pacienteState.id === nuevoPaciente.id ? nuevoPaciente : pacienteState,
+    if (patientObj) {
+      newPatient.id = patientObj.id;
+      if (patients) {
+        const updatePatients = patients?.map(patientstate =>
+          patientstate.id === newPatient.id ? newPatient : patientstate,
         );
-        setPacientes(pacientesActualizados);
+        setPatients(updatePatients);
       }
     } else {
-      if (pacientes) {
-        setPacientes([...pacientes, nuevoPaciente]);
+      if (patients) {
+        setPatients([...patients, newPatient]);
       } else {
-        setPacientes([nuevoPaciente]);
+        setPatients([newPatient]);
       }
     }
     handleClose();
@@ -101,14 +101,12 @@ const Formulario = ({
       <SafeAreaView style={styles.content}>
         <ScrollView>
           <Text style={styles.title}>
-            {pacienteObj ? 'Editar' : 'Nueva'}
+            {patientObj ? 'Editar ' : 'Nueva '}
             <Text style={styles.titleBold}>Cita</Text>
           </Text>
 
-          <Pressable
-            style={styles.btnCancelar}
-            onLongPress={() => handleClose()}>
-            <Text style={styles.btnCancelarTexto}>X Cancelar</Text>
+          <Pressable style={styles.btnCancel} onLongPress={() => handleClose()}>
+            <Text style={styles.btnCancelText}>X Cancelar</Text>
           </Pressable>
 
           <View style={styles.field}>
@@ -117,8 +115,8 @@ const Formulario = ({
               style={styles.input}
               placeholder="Nombre paciente"
               placeholderTextColor={'#666'}
-              value={paciente}
-              onChangeText={setPaciente}
+              value={patient}
+              onChangeText={setPatient}
             />
           </View>
 
@@ -128,8 +126,8 @@ const Formulario = ({
               style={styles.input}
               placeholder="Nombre propietario"
               placeholderTextColor={'#666'}
-              value={propietario}
-              onChangeText={setPropietario}
+              value={owner}
+              onChangeText={setOwner}
             />
           </View>
 
@@ -152,8 +150,8 @@ const Formulario = ({
               placeholder="333 3333"
               placeholderTextColor={'#666'}
               keyboardType="number-pad"
-              value={telefono}
-              onChangeText={setTelefono}
+              value={phone}
+              onChangeText={setPhone}
               maxLength={10}
             />
           </View>
@@ -162,9 +160,9 @@ const Formulario = ({
             <Text style={styles.label}>Fecha de alta</Text>
             <View style={styles.dateContainer}>
               <DatePicker
-                date={fecha}
+                date={date}
                 locale="es"
-                onDateChange={date => setFecha(date)}
+                onDateChange={date => setDate(date)}
               />
             </View>
           </View>
@@ -172,19 +170,19 @@ const Formulario = ({
           <View style={styles.field}>
             <Text style={styles.label}>Sintomas</Text>
             <TextInput
-              style={[styles.input, styles.sintomasInput]}
+              style={[styles.input, styles.symptomsInput]}
               placeholder="Sintomas del paciente"
               placeholderTextColor={'#666'}
-              value={sintomas}
-              onChangeText={setSintomas}
+              value={symptoms}
+              onChangeText={setSymptoms}
               multiline={true}
               numberOfLines={4}
             />
           </View>
 
-          <Pressable style={styles.btnNuevaCita} onPress={() => handleCita()}>
-            <Text style={styles.btnNuevaCitaTexto}>
-              {pacienteObj ? 'Editar paciente' : 'Agregar paciente'}
+          <Pressable style={styles.btnNewDate} onPress={() => handleDate()}>
+            <Text style={styles.btnNewDateText}>
+              {patientObj ? 'Editar paciente' : 'Agregar paciente'}
             </Text>
           </Pressable>
         </ScrollView>
@@ -208,14 +206,14 @@ const styles = StyleSheet.create({
   titleBold: {
     fontWeight: '900',
   },
-  btnCancelar: {
+  btnCancel: {
     marginVertical: 30,
     backgroundColor: '#5827A4',
     marginHorizontal: 30,
     padding: 15,
     borderRadius: 10,
   },
-  btnCancelarTexto: {
+  btnCancelText: {
     color: '#fff',
     textAlign: 'center',
     fontWeight: '900',
@@ -242,17 +240,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
   },
-  sintomasInput: {
+  symptomsInput: {
     height: 100,
   },
-  btnNuevaCita: {
+  btnNewDate: {
     marginVertical: 50,
     backgroundColor: '#F59E0B',
     paddingVertical: 15,
     marginHorizontal: 30,
     borderRadius: 10,
   },
-  btnNuevaCitaTexto: {
+  btnNewDateText: {
     color: '#5827A4',
     textAlign: 'center',
     fontWeight: '900',

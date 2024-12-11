@@ -1,58 +1,41 @@
-import {
-  Alert,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import {IPaciente} from '../interfaces/Paciente';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {IPatient} from '../interfaces/Paciente';
+import {formatingDate} from '../utils/formatDate';
 
-interface PropsPaciente {
-  paciente: IPaciente;
+interface PropsPatient {
+  patient: IPatient;
   setModalVisible: (modalVisible: boolean) => void;
-  editPatient: (patient: IPaciente) => void;
-  deletPatient: (patient: IPaciente) => void;
-  setModalPaciente: (modalPaciente: boolean) => void;
-  setPatient: (patient: IPaciente) => void;
+  editPatient: (patient: IPatient) => void;
+  deletPatient: (patient: IPatient) => void;
+  setModalPatient: (modalpatient: boolean) => void;
+  setPatient: (patient: IPatient) => void;
 }
 
-const Paciente = ({
-  paciente,
+const patient = ({
+  patient,
   setModalVisible,
   editPatient,
   deletPatient,
-  setModalPaciente,
+  setModalPatient,
   setPatient,
-}: PropsPaciente) => {
-  const formatingDate = (date: Date) => {
-    const options: any = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-
-    return date.toLocaleDateString('es-ES', options);
-  };
-
+}: PropsPatient) => {
   return (
     <Pressable
       onLongPress={() => {
-        setModalPaciente(true);
-        setPatient(paciente);
+        setModalPatient(true);
+        setPatient(patient);
       }}>
       <View style={styles.container}>
         <Text style={styles.label}>Paciente:</Text>
-        <Text style={styles.text}>{paciente.paciente}</Text>
-        <Text style={styles.date}>{formatingDate(paciente.fecha)}</Text>
+        <Text style={styles.text}>{patient.patient}</Text>
+        <Text style={styles.date}>{formatingDate(patient.date)}</Text>
 
         <View style={styles.contentButtons}>
           <Pressable
             style={[styles.buttons, styles.editButton]}
             onLongPress={() => {
               setModalVisible(true);
-              editPatient(paciente);
+              editPatient(patient);
             }}>
             <Text style={styles.textButtons}>Editar</Text>
           </Pressable>
@@ -60,7 +43,7 @@ const Paciente = ({
           <Pressable
             style={[styles.buttons, styles.deletButton]}
             onLongPress={() => {
-              deletPatient(paciente);
+              deletPatient(patient);
             }}>
             <Text style={styles.textButtons}>Eliminar</Text>
           </Pressable>
@@ -116,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Paciente;
+export default patient;

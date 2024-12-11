@@ -16,16 +16,16 @@ import {
 } from 'react-native';
 import Formulario from './src/components/Formulario';
 import Paciente from './src/components/Paciente';
-import {IPaciente} from './src/interfaces/Paciente';
+import {IPatient} from './src/interfaces/Paciente';
 import InfoPaciente from './src/components/InfoPaciente';
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [pacientes, setPacientes] = useState<IPaciente[] | null>(null);
-  const [paciente, setPaciente] = useState<IPaciente | null>(null);
-  const [modalPaciente, setModalPaciente] = useState<boolean>(false);
+  const [patients, setPatients] = useState<IPatient[] | null>(null);
+  const [patient, setPatient] = useState<IPatient | null>(null);
+  const [modalPatient, setModalPatient] = useState<boolean>(false);
 
-  const handleDelet = (deletPatient: IPaciente) => {
+  const handleDelet = (deletPatient: IPatient) => {
     Alert.alert(
       '¿Desea eliminar este paciente?',
       'Un paciente eliminado no se puede recuperar',
@@ -34,14 +34,14 @@ const App = () => {
         {
           text: 'Si, Eliminar',
           onPress: () => {
-            if (pacientes) {
-              const pacientesActualizados = pacientes.filter(
-                pacienteState => pacienteState.id !== deletPatient.id,
+            if (patients) {
+              const uploadPatients = patients.filter(
+                patientState => patientState.id !== deletPatient.id,
               );
-              if (pacientesActualizados.length > 0) {
-                setPacientes(pacientesActualizados);
+              if (uploadPatients.length > 0) {
+                setPatients(uploadPatients);
               } else {
-                setPacientes(null);
+                setPatients(null);
               }
             }
           },
@@ -52,53 +52,58 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titulo}>
+      <Text style={styles.title}>
         Administrador de citas {''}
-        <Text style={styles.tituloBold}>Veterinaria</Text>
+        <Text style={styles.titleBold}>Veterinaria</Text>
       </Text>
 
       <Pressable
-        style={styles.btnNuevaCita}
+        style={styles.btnNewDate}
         onPress={() => setModalVisible(true)}>
-        <Text style={styles.btnTextoNuevaCita}>Nueva Cita</Text>
+        <Text style={styles.btnTextNewDate}>Nueva Cita</Text>
       </Pressable>
 
-      {pacientes ? (
+      {patients ? (
         <FlatList
           style={styles.list}
-          data={pacientes}
+          data={patients}
           keyExtractor={item => item.id}
           renderItem={({item}) => {
             return (
               <Paciente
-                paciente={item}
+                patient={item}
                 setModalVisible={setModalVisible}
-                editPatient={setPaciente}
+                editPatient={setPatient}
                 deletPatient={handleDelet}
-                setModalPaciente={setModalPaciente}
-                setPatient={setPaciente}
+                setModalPatient={setModalPatient}
+                setPatient={setPatient}
               />
             );
           }}
         />
       ) : (
-        <Text style={styles.emptyPacientes}>No hay pacientes</Text>
+        <Text style={styles.emptyPatients}>No hay pacientes</Text>
       )}
 
-      <Formulario
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        pacientes={pacientes}
-        setPacientes={setPacientes}
-        paciente={paciente}
-        setPaciente={setPaciente}
-      />
+      {modalVisible && (
+        <Formulario
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          patients={patients}
+          setPatients={setPatients}
+          patient={patient}
+          setPatient={setPatient}
+        />
+      )}
 
-      <InfoPaciente
-        modalPaciente={modalPaciente}
-        setModalPaciente={setModalPaciente}
-        patient={paciente}
-      />
+      {modalPatient && (
+        <InfoPaciente
+          modalPatient={modalPatient}
+          setModalPatient={setModalPatient}
+          patient={patient}
+          setPatient={setPatient}
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -108,32 +113,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
     flex: 1,
   },
-  titulo: {
+  title: {
     textAlign: 'center',
     fontSize: 30,
     color: '#374151',
     fontWeight: '600',
   },
-
-  tituloBold: {
+  titleBold: {
     fontWeight: '900',
     color: '#6D28D9',
   },
-  btnNuevaCita: {
+  btnNewDate: {
     backgroundColor: '#6D28D9',
     padding: 15,
     marginTop: 20,
     marginHorizontal: 20,
     borderRadius: 10,
   },
-  btnTextoNuevaCita: {
+  btnTextNewDate: {
     textAlign: 'center',
     color: '#fff',
     fontSize: 18,
     fontWeight: '900',
     textTransform: 'uppercase',
   },
-  emptyPacientes: {
+  emptyPatients: {
     marginTop: 40,
     textAlign: 'center',
     fontSize: 24,

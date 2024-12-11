@@ -1,9 +1,9 @@
-export interface IPaciente {
+export interface IPatient {
   id: string;
-  paciente: string;
-  propietario: string;
+  patient: string;
+  owner: string;
   email: string;
-  telefono: string;
-  fecha: Date;
-  sintomas: string;
+  phone: string;
+  date: Date;
+  symptoms: string;
 }
